@@ -1,5 +1,14 @@
-#root {
+:root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.app-container {
+  width: 100vw;
+}
+
+.gamelist {
+  display: flex;
+  justify-content: center;
 }

@@ -22,7 +22,6 @@ const App = () => {
     <div className='app-container'>
       <h1>Lista de Jogos</h1>
       <div className='gamelist'>
-
         {console.log(data)}
         <GameList gamelist={data} />
       </div>
