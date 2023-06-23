@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
 
-import './App.css';
 import { GameList } from './components/GameList';
+import { Loader } from './components/Loader';
+import './App.css';
 
 const App = () => {
   const { isLoading, error, data } = useQuery("gamelist", () => {
@@ -12,7 +13,7 @@ const App = () => {
       .then(response => response.data);
   });
 
-  if (isLoading) return 'Carregando...'
+  if (isLoading) return <Loader />
 
   console.log(error);
 
