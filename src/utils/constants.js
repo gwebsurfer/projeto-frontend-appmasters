@@ -1,0 +1,1 @@
+export const codeError = [500, 502, 503, 504, 507, 508, 509];

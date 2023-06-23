@@ -12,3 +12,14 @@
   display: flex;
   justify-content: center;
 }
+
+.message-box {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error {
+  font-size: 2rem;
+}
