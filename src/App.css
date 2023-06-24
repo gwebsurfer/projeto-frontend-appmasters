@@ -4,6 +4,12 @@
   box-sizing: border-box;
 }
 
+h1 {
+  font-size: 2rem;
+  letter-spacing: -1px;
+  margin-top: 0;
+}
+
 .app-container {
   width: auto;
 }

@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { GameList } from './components/GameList';
-import { Loader } from './components/Loader';
 import { instance } from './utils/api';
 import { codeError } from './utils/constants';
+import { Loader } from './components/Loader';
+import { GameList } from './components/GameList';
+import { GenreTagList } from './components/GenreTagList';
+import { NavBar } from './components/NavBar';
+import { ErrorHandler } from './components/ErrorHandler';
+
 import './App.css';
+
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState();
+  const [filteredData, setFilteredData] = useState();
+
   const { isLoading, data } = useQuery("game-list", () => {
 
     return instance
@@ -24,17 +31,25 @@ const App = () => {
       });
   });
 
-  if (!data && !isLoading && errorMessage) return errorMessage
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
+
+  if (!data && !isLoading && errorMessage) return <ErrorHandler>{errorMessage}</ErrorHandler>
 
   if (isLoading) return <Loader />
 
   return (
-    <div className='app-container'>
-      <h1>Lista de Jogos</h1>
-      <div className='gamelist'>
-        <GameList gamelist={data} />
+    <>
+      <NavBar />
+      <div className='app-container'>
+        <GenreTagList taglist={data} setFilteredData={setFilteredData} />
+        <h1>Game List</h1>
+        <div className='gamelist'>
+          <GameList gamelist={filteredData} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,3 +1,4 @@
+import { Button } from './Button';
 import './Card.css';
 
 export const Card = ({ game }) => (
@@ -12,6 +13,6 @@ export const Card = ({ game }) => (
       <h6>Release date: {game.release_date}</h6>
       <p>{game.short_description}</p>
     </div>
-    <button>Play now</button>
+    <Button classType={'card-button'} onClickFunction={() => { window.location.href = game.game_url }}>Play now</Button>
   </div>
 )
