@@ -15,6 +15,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [filteredData, setFilteredData] = useState();
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('All');
 
   const { isLoading, data } = useQuery("game-list", () => {
 
@@ -44,10 +45,10 @@ const App = () => {
 
   return (
     <>
-      <NavBar setSearchTerm={setSearchTerm} />
+      <NavBar setSearchTerm={setSearchTerm} setSelectedGenre={setSelectedGenre} />
       <div className='app-container'>
         <h1>Game List</h1>
-        <GenreTagList genreList={data} setFilteredData={setFilteredData} />
+        <GenreTagList genreList={data} setFilteredData={setFilteredData} setSelectedGenre={setSelectedGenre} selectedGenre={selectedGenre} />
         <div className='gameList'>
           <GameList gameList={filteredData} />
         </div>

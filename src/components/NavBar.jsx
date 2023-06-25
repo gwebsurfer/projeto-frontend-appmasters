@@ -1,10 +1,11 @@
 import './NavBar.css';
 
-export const NavBar = ({ setSearchTerm }) => {
+export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
 
   const handleSearchChange = (e) => {
     const searchTerm = e.target.value;
     setSearchTerm(searchTerm);
+    setSelectedGenre('All');
   };
 
   return (
