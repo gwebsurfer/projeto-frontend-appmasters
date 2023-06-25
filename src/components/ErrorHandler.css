@@ -1,0 +1,36 @@
+.error {
+  padding: 4rem;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  word-wrap: break-word;
+}
+
+.error-button {
+  width: 300px;
+  border-radius: 0.6rem;
+  border: rgb(100, 108, 255) 1px solid;
+  padding: 1em;
+  margin-top: 0;
+  margin: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: rgb(17, 21, 29);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  text-transform: uppercase;
+}
+
+.error-button:hover {
+  border-color: rgb(17, 21, 29);
+  background-color: rgb(26, 31, 41);
+}
+
+.error-button:focus,
+.error-button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}

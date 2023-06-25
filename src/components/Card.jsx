@@ -1,8 +1,14 @@
+import { motion } from 'framer-motion';
 import { Button } from './Button';
 import './Card.css';
 
 export const Card = ({ game }) => (
-  <div className='card'>
+  <motion.div
+    layout
+    animate={{ opacity: 1 }}
+    initial={{ opacity: 0 }}
+    exit={{ opacity: 0 }}
+    className='card'>
     <img src={game.thumbnail} alt="thumbnail" />
     <div className='game-info'>
       <div className='categories'>
@@ -14,5 +20,5 @@ export const Card = ({ game }) => (
       <p>{game.short_description}</p>
     </div>
     <Button classType={'card-button'} onClickFunction={() => { window.location.href = game.game_url }}>Play now</Button>
-  </div>
+  </motion.div>
 )

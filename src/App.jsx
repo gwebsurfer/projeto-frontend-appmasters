@@ -11,7 +11,6 @@ import { ErrorHandler } from './components/ErrorHandler';
 
 import './App.css';
 
-
 const App = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [filteredData, setFilteredData] = useState();
@@ -22,12 +21,12 @@ const App = () => {
       .get('/data')
       .then(response => response.data)
       .catch(function (error) {
-        if (error.code === 'ECONNABORTED') return setErrorMessage('O servidor demorou para responder, tente mais tarde');
+        if (error.code === 'ECONNABORTED') return setErrorMessage('O servidor demorou para responder, tente mais tarde.');
 
         if (codeError.includes(error.response?.status))
-          return setErrorMessage('O servidor falhou em responder, tente recarregar a página', error.response?.status);
+          return setErrorMessage('O servidor falhou em responder, tente recarregar a página.', error.response?.status);
 
-        return setErrorMessage('O servidor não conseguirá responder por agora, tente voltar novamente mais tarde', error.response?.status);
+        return setErrorMessage('O servidor não conseguirá responder por agora, tente voltar novamente mais tarde.', error.response?.status);
       });
   });
 
@@ -43,8 +42,8 @@ const App = () => {
     <>
       <NavBar />
       <div className='app-container'>
-        <GenreTagList taglist={data} setFilteredData={setFilteredData} />
         <h1>Game List</h1>
+        <GenreTagList taglist={data} setFilteredData={setFilteredData} />
         <div className='gamelist'>
           <GameList gamelist={filteredData} />
         </div>
