@@ -1,6 +1,11 @@
 import './NavBar.css';
 
-export const NavBar = () => {
+export const NavBar = ({ setSearchTerm }) => {
+
+  const handleSearchChange = (e) => {
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+  };
 
   return (
     <div className="navbar">
@@ -11,7 +16,7 @@ export const NavBar = () => {
         <img src="/icon.svg" alt="icon" />
       </div>
       <div className="search-bar">
-        <input type="text" placeholder='Search by Game Title' />
+        <input type="text" placeholder='Search by Game Title' onChange={handleSearchChange} />
         <img className='search-icon' src="/search.svg" alt="" />
       </div>
     </div>

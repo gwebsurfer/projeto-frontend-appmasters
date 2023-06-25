@@ -14,6 +14,7 @@ import './App.css';
 const App = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [filteredData, setFilteredData] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { isLoading, data } = useQuery("game-list", () => {
 
@@ -31,8 +32,11 @@ const App = () => {
   });
 
   useEffect(() => {
-    setFilteredData(data);
-  }, [data]);
+    const filteredResults = data?.filter((game) =>
+      game.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filteredResults);
+  }, [data, searchTerm]);
 
   if (!data && !isLoading && errorMessage) return <ErrorHandler>{errorMessage}</ErrorHandler>
 
@@ -40,7 +44,7 @@ const App = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar setSearchTerm={setSearchTerm} />
       <div className='app-container'>
         <h1>Game List</h1>
         <GenreTagList taglist={data} setFilteredData={setFilteredData} />
