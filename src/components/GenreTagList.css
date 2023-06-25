@@ -28,8 +28,9 @@
 }
 
 .genre-button:focus,
+.genre-button:active,
 .genre-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto rgb(100, 108, 255);
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
