@@ -16,6 +16,7 @@
   font-size: 0.5rem;
   font-weight: 400;
   font-family: inherit;
+  color: rgba(246, 248, 251, 0.87);
   background-color: rgb(26, 31, 41);
   cursor: pointer;
   transition: border-color 0.25s;
@@ -31,7 +32,7 @@
 .genre-button:active,
 .genre-button:focus-visible,
 .genre-button.active {
-  outline: 4px auto rgb(100, 108, 255);
+  outline: 2px auto rgb(100, 108, 255);
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

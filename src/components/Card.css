@@ -72,6 +72,7 @@ p {
 .tag {
   text-align: center;
   padding: 0.4rem 0.8rem;
+  color: rgba(246, 248, 251, 0.87);
   background-color: rgba(7, 105, 190, 0.5);
   backdrop-filter: blur(10px);
   border: rgba(255, 255, 255, 0.08) 0.05rem solid;
@@ -84,6 +85,7 @@ p {
 .tag-2 {
   text-align: center;
   padding: 0.4rem 0.8rem;
+  color: rgba(246, 248, 251, 0.87);
   background-color: rgba(154, 10, 96, 0.5);
   backdrop-filter: blur(10px);
   border: rgba(255, 255, 255, 0.08) 0.05rem solid;
@@ -103,6 +105,7 @@ p {
   font-size: 0.8rem;
   font-weight: 500;
   font-family: inherit;
+  color: rgba(246, 248, 251, 0.87);
   background-color: rgb(26, 31, 41);
   cursor: pointer;
   transition: border-color 0.25s;
@@ -116,5 +119,5 @@ p {
 
 .card-button:focus,
 .card-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px auto rgb(100, 108, 255);
 }
