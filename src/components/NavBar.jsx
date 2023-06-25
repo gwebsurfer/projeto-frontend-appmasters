@@ -17,7 +17,7 @@ export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
         <img src="./icon.svg" alt="icon" />
       </div>
       <div className="search-bar">
-        <input type="text" placeholder='Search by Game Title' onChange={handleSearchChange} />
+        <input type="text" placeholder='Search by game title' onChange={handleSearchChange} />
         <img className='search-icon' src="./search.svg" alt="" />
       </div>
     </div>
