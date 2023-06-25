@@ -1,8 +1,8 @@
 import { Card } from "./Card";
 import './GameList.css'
 
-export const GameList = ({ gamelist }) => (
+export const GameList = ({ gameList }) => (
   <div className="container">
-    {gamelist?.map((game) => <Card key={game.id} game={game} />)}
+    {gameList?.map((game) => <Card key={game.id} game={game} />)}
   </div>
 )

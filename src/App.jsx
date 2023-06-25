@@ -47,9 +47,9 @@ const App = () => {
       <NavBar setSearchTerm={setSearchTerm} />
       <div className='app-container'>
         <h1>Game List</h1>
-        <GenreTagList taglist={data} setFilteredData={setFilteredData} />
-        <div className='gamelist'>
-          <GameList gamelist={filteredData} />
+        <GenreTagList genreList={data} setFilteredData={setFilteredData} />
+        <div className='gameList'>
+          <GameList gameList={filteredData} />
         </div>
       </div>
     </>

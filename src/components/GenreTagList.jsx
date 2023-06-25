@@ -1,14 +1,14 @@
 import { Button } from "./Button";
 import './GenreTagList.css'
 
-export const GenreTagList = ({ taglist, setFilteredData }) => {
-  const uniqueGenres = ['All', ...new Set(taglist?.map((game) => game.genre))];
+export const GenreTagList = ({ genreList, setFilteredData }) => {
+  const uniqueGenres = ['All', ...new Set(genreList?.map((game) => game.genre))];
 
   const genreFilter = (genre) => {
     if (genre === 'All') {
-      setFilteredData(taglist);
+      setFilteredData(genreList);
     } else {
-      setFilteredData(taglist.filter((game) => game.genre === genre))
+      setFilteredData(genreList.filter((game) => game.genre === genre))
     }
   }
 
