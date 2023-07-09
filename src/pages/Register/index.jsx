@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
 
+import { auth } from "../../services/firebaseConfig";
+import { Loader } from "../../components/Loader";
 import arrowImg from "../../assets/arrow.svg";
 import logoImg from "../../assets/logo.svg";
-import { auth } from "../../services/firebaseConfig";
 
 import "./styles.css";
 
@@ -20,9 +21,8 @@ export function Register() {
     createUserWithEmailAndPassword(email, password);
   }
 
-  if (loading) {
-    return <p>carregando...</p>;
-  }
+  if (loading) return <Loader />
+
   return (
     <div className="container-register">
       <header className="header">

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
 
+import App from "../../App";
+import { auth } from "../../services/firebaseConfig";
+import { Loader } from "../../components/Loader";
 import arrowImg from "../../assets/arrow.svg";
 import logoImg from "../../assets/logo.svg";
-import { auth } from "../../services/firebaseConfig";
 
 import "./styles.css";
 
@@ -20,12 +22,10 @@ export function Login() {
     signInWithEmailAndPassword(email, password);
   }
 
-  if (loading) {
-    return <p>loading...</p>;
-  }
-  if (user) {
-    return console.log(user);
-  }
+  if (loading) return <Loader />
+
+  if (user) return <App />
+
   return (
     <div className="container-login">
       <header className="header">

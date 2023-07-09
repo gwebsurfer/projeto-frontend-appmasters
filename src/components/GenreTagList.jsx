@@ -1,4 +1,3 @@
-import { Button } from "./Button";
 import './GenreTagList.css'
 
 export const GenreTagList = ({ genreList, setFilteredData, selectedGenre, setSelectedGenre }) => {
@@ -15,9 +14,11 @@ export const GenreTagList = ({ genreList, setFilteredData, selectedGenre, setSel
 
   return (
     <div className="genre-list">
+      <select onChange={(e) => genreFilter(e.target.value)} value={selectedGenre} className="genre-select">
       {uniqueGenres.map((genre) => (
-        <Button onClickFunction={() => genreFilter(genre)} classType={`genre-button ${genre === selectedGenre && 'active'}`} key={genre}>{genre}</Button>
+        <option value={genre} key={genre}>{genre}</option>
       ))}
+      </select>
     </div>
   )
 }
