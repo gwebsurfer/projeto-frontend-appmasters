@@ -27,7 +27,7 @@ export function Login() {
     return console.log(user);
   }
   return (
-    <div className="container">
+    <div className="container-login">
       <header className="header">
         <img src={logoImg} alt="AppMasters" className="logoImg" />
         <span>Please enter your login information.</span>
@@ -51,15 +51,13 @@ export function Login() {
             type="password"
             name="password"
             id="password"
-            placeholder="********************"
+            placeholder="************"
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <a href="#">Forgot your password?</a>
-
         <button className="button" onClick={handleSignIn}>
-          Sign in <img src={arrowImg} alt="->" />
+          Sign in <img src={arrowImg} alt="Arrow icon" />
         </button>
         <div className="footer">
           <p>Don&apos;t have an account?</p>

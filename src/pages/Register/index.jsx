@@ -24,9 +24,9 @@ export function Register() {
     return <p>carregando...</p>;
   }
   return (
-    <div className="container">
+    <div className="container-register">
       <header className="header">
-        <img src={logoImg} alt="Workflow" className="logoImg" />
+        <img src={logoImg} alt="AppMasters" className="logoImg" />
         <span>Please enter your registration information.</span>
       </header>
 
@@ -48,17 +48,17 @@ export function Register() {
             type="password"
             name="password"
             id="password"
-            placeholder="********************"
+            placeholder="************"
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
         <button onClick={handleSignUp} className="button">
-          Sign up <img src={arrowImg} alt="->" />
+          Sign up <img src={arrowImg} alt="Arrow icon" />
         </button>
         <div className="footer">
           <p>Do you already have an account?</p>
-          <Link to="/">Access your account here.</Link>
+          <Link to="/auth">Access your account here.</Link>
         </div>
       </form>
     </div>
