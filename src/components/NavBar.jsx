@@ -1,3 +1,7 @@
+import logoImg from "../assets/logo.svg";
+import favicon from "../assets/icon.svg";
+import searchIcon from "../assets/search.svg";
+
 import './NavBar.css';
 
 export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
@@ -11,14 +15,14 @@ export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
   return (
     <div className="navbar">
       <div className="logo">
-        <img src="./logo.svg" alt="logo" />
+        <img src={logoImg} alt="logo" />
       </div>
       <div className="logo-mobile">
-        <img src="./icon.svg" alt="icon" />
+        <img src={favicon} alt="icon" />
       </div>
       <div className="search-bar">
         <input type="text" placeholder='Search by game title' onChange={handleSearchChange} />
-        <img className='search-icon' src="./search.svg" alt="" />
+        <img className='search-icon' src={searchIcon} alt="" />
       </div>
     </div>
   )
