@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { auth } from "../../services/firebaseConfig";
 import { Loader } from "../../components/Loader";
@@ -12,13 +12,16 @@ import "./styles.css";
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const [createUserWithEmailAndPassword, loading] =
     useCreateUserWithEmailAndPassword(auth);
 
-  function handleSignUp(e) {
+  async function handleSignUp(e) {
     e.preventDefault();
-    createUserWithEmailAndPassword(email, password);
+    const savedUser = await createUserWithEmailAndPassword(email, password);
+    console.log(savedUser);
+    navigate("/");
   }
 
   if (loading) return <Loader />

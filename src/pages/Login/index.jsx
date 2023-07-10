@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import App from "../../App";
 import { auth } from "../../services/firebaseConfig";
 import { Loader } from "../../components/Loader";
 import arrowImg from "../../assets/arrow.svg";
@@ -13,18 +12,18 @@ import "./styles.css";
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const [signInWithEmailAndPassword, user, loading] =
+  const [signInWithEmailAndPassword, loading] =
     useSignInWithEmailAndPassword(auth);
 
-  function handleSignIn(e) {
+  async function handleSignIn(e) {
     e.preventDefault();
-    signInWithEmailAndPassword(email, password);
+    await signInWithEmailAndPassword(email, password);
+    navigate("/");
   }
 
   if (loading) return <Loader />
-
-  if (user) return <App />
 
   return (
     <div className="container-login">
