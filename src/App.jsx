@@ -5,7 +5,7 @@ import { instance } from './utils/api';
 import { codeError } from './utils/constants';
 import { Loader } from './components/Loader';
 import { GameList } from './components/GameList';
-import { GenreTagList } from './components/GenreTagList';
+import { GenreList } from './components/GenreList';
 import { NavBar } from './components/NavBar';
 import { ErrorHandler } from './components/ErrorHandler';
 
@@ -48,7 +48,7 @@ const App = () => {
       <NavBar setSearchTerm={setSearchTerm} setSelectedGenre={setSelectedGenre} />
       <div className='app-container'>
         <h1>Game List</h1>
-        <GenreTagList genreList={data} setFilteredData={setFilteredData} setSelectedGenre={setSelectedGenre} selectedGenre={selectedGenre} />
+        <GenreList genreList={data} setFilteredData={setFilteredData} setSelectedGenre={setSelectedGenre} selectedGenre={selectedGenre} />
         <div className='gameList'>
           <GameList gameList={filteredData} />
         </div>
