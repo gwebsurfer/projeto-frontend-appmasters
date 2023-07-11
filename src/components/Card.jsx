@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDoc, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { motion } from 'framer-motion';
 import { Button } from './Button';
 import { auth, db } from "../services/firebaseConfig";
@@ -50,6 +50,7 @@ export const Card = ({ game }) => {
   const navigate = useNavigate();
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [userDocId, setUserDocId] = useState(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -60,45 +61,45 @@ export const Card = ({ game }) => {
   }, []);
 
   useEffect(() => {
-    const fetchFavoriteStatus = async () => {
-      try {
-        const userUID = auth.currentUser?.uid;
-        const userRef = doc(db, "users", userUID);
-        const userSnapshot = await getDoc(userRef);
-        const userData = userSnapshot.data();
-
-        if (userData && userData.isFavorite && userData.isFavorite.includes(game.id)) {
-          setIsFavorite(true);
-        } else {
-          setIsFavorite(false);
+    const checkUserDoc = async () => {
+      if (isUserLoggedIn) {
+        try {
+          const userUID = auth?.currentUser?.uid;
+          const userRef = doc(db, "users", userUID);
+  
+          const userSnapshot = await getDoc(userRef);
+  
+          if (userSnapshot.exists()) {
+            setUserDocId(userSnapshot.id);
+            const userData = userSnapshot.data();
+  
+            if (userData) {
+              setUserRatings(userData.ratings || []);
+  
+              if (userData.isFavorite && userData.isFavorite.includes(game.id)) {
+                setIsFavorite(true);
+              } else {
+                setIsFavorite(false);
+              }
+            }
+          } else {
+            const newUserData = {
+              ratings: [],
+              isFavorite: []
+            };
+  
+            const newUserRef = doc(db, "users", userUID);
+            await setDoc(newUserRef, newUserData);
+  
+            setUserDocId(newUserRef.id);
+          }
+        } catch (error) {
+          console.error("Erro ao verificar o documento do usuário:", error);
         }
-      } catch (error) {
-        console.error("Erro ao verificar status de favorito:", error);
       }
     };
-
-    const fetchUserRatings = async () => {
-      try {
-        const userUID = auth.currentUser?.uid;
-        const userRef = doc(db, "users", userUID);
-        const userSnapshot = await getDoc(userRef);
-        const userData = userSnapshot.data();
-
-        if (userData) {
-          setUserRatings(userData.ratings || []);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar avaliações do usuário:", error);
-      }
-    };
-
-    if (isUserLoggedIn) {
-      fetchFavoriteStatus();
-      fetchUserRatings();
-    } else {
-      setIsFavorite(false);
-      setUserRatings([]);
-    }
+  
+    checkUserDoc();
   }, [isUserLoggedIn, game.id]);
 
   const handleFavoriteClick = async () => {
@@ -106,14 +107,10 @@ export const Card = ({ game }) => {
       navigate('/auth');
     } else {
       try {
-        const userUID = auth?.currentUser?.uid;
-        const userRef = doc(db, "users", userUID);
-        const userSnapshot = await getDoc(userRef);
-        const userData = userSnapshot.data();
-
+        const userRef = doc(db, "users", userDocId);
         setIsFavoriteClicked(true);
   
-        if (userData && userData.isFavorite && userData.isFavorite.includes(game.id)) {
+        if (isFavorite) {
           await updateDoc(userRef, {
             isFavorite: arrayRemove(game.id)
           });
@@ -124,55 +121,58 @@ export const Card = ({ game }) => {
           });
           setIsFavorite(true);
         }
-
+  
         setTimeout(() => {
           setIsFavoriteClicked(false);
         }, 300);
-
       } catch (error) {
-        console.error("Erro ao favoritar jogo:", error);
+        console.error("Erro ao favoritar o jogo:", error);
       }
     }
-  };  
+  };
 
   const handleRatingClick = async (ratingValue) => {
     if (!isUserLoggedIn) {
       navigate('/auth');
     } else {
       try {
-        const userUID = auth.currentUser.uid;
-        const userRef = doc(db, "users", userUID);
+        const userRef = doc(db, "users", userDocId);
+  
         const userSnapshot = await getDoc(userRef);
         const userData = userSnapshot.data();
   
-        if (userData) {
-          const { ratings } = userData;
+        let updatedRatings = [];
   
+        if (userData && userData.ratings && userData.ratings.some(item => item.gameId === game.id)) {
+          updatedRatings = userData.ratings.map((item) => {
+            if (item.gameId === game.id) {
+              return {
+                ...item,
+                rating: ratingValue
+              };
+            }
+            return item;
+          });
+        } else {
           const gameRating = {
             gameId: game.id,
             rating: ratingValue
           };
-  
-          let updatedRatings = [];
-  
-          if (ratings) {
-            updatedRatings = ratings.filter((item) => item.gameId !== game.id);
-          }
-  
-          updatedRatings.push(gameRating);
-  
-          await updateDoc(userRef, {
-            ratings: updatedRatings
-          });
-  
-          setRating(ratingValue);
+          updatedRatings = [...(userData?.ratings || []), gameRating];
         }
+  
+        await updateDoc(userRef, {
+          ratings: updatedRatings
+        });
+  
+        setUserRatings(updatedRatings);
+        setRating(ratingValue);
+  
       } catch (error) {
-        console.error("Erro ao avaliar jogo:", error);
+        console.error("Erro ao avaliar o jogo:", error);
       }
     }
   };
-  
 
   return (
     <motion.div
@@ -185,16 +185,20 @@ export const Card = ({ game }) => {
       <div className='game-info'>
         <div className='game-rate'>
           <div className='rate'>
-            {[...Array(4)].map((_, index) => (
+          {[...Array(4)].map((_, index) => {
+            const userRating = userRatings.find(item => item.gameId === game.id);
+
+            return (
               <img
                 key={index}
-                src={index < (rating || userRatings.find(item => item.gameId === game.id)?.rating || 0) ? starFilledIcon : starIcon}
+                src={index < (rating || (userRating && userRating.rating) || 0) ? starFilledIcon : starIcon}
                 alt='Rate icon'
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleRatingClick(index + 1)}
               />
-            ))}
+            );
+          })}
           </div>
           <div
             className={`favorite ${isFavorite || isFavoriteHover ? 'favorite-hover' : ''} ${isFavoriteClicked ? 'favorite-click-animation' : ''}`}

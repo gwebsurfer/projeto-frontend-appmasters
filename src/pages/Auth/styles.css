@@ -1,4 +1,4 @@
-.container-register {
+.container-auth {
   margin: 0 auto;
   width: 20rem;
   height: 100vh;
@@ -8,43 +8,43 @@
   flex-direction: column;
 }
 
-.container-register .header {
+.container-auth .header {
   display: flex;
   align-items: center;
   flex-direction: column;
   margin-bottom: 2rem;
 }
 
-.container-register .header span {
+.container-auth .header span {
   font-weight: 500;
   font-size: 1rem;
 }
 
-.container-register .header .logoImg {
+.container-auth .header .logoImg {
   width: 16.25rem;
   margin-bottom: 2rem;
 }
 
-.container-register form {
+.container-auth form {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-.container-register form  .inputContainer {
+.container-auth form  .inputContainer {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
 }
 
-.container-register form  .inputContainer label {
+.container-auth form  .inputContainer label {
   font-weight: 400;
   font-size: 0.8rem;
   line-height: 1.2rem;
   margin-bottom: 0.5rem;
 }
 
-.container-register form  .inputContainer input {
+.container-auth form  .inputContainer input {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -60,7 +60,7 @@
   color: rgba(246, 248, 251, 0.75);
 }
 
-.container-register form a {
+.container-auth form a {
   font-weight: 400;
   font-size: 1rem;
   padding-top: 1rem;
@@ -68,7 +68,7 @@
   color: rgb(92, 115, 219);
 }
 
-.container-register form .button {
+.container-auth form .button {
   width: 100%;
   border-radius: 0.5rem;
   border: rgb(100, 108, 255) 0.063rem solid;
@@ -84,29 +84,29 @@
   text-transform: uppercase;
 }
 
-.container-register form .button:hover {
+.container-auth form .button:hover {
   cursor: pointer;
   opacity: 0.8;
 }
 
-.container-register form .button img {
+.container-auth form .button img {
   width: 1rem;
 }
 
-.container-register form .footer {
+.container-auth form .footer {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.625rem;
 }
 
-.container-register form .footer p {
+.container-auth form .footer p {
   font-weight: 400;
   font-size: 0.75rem;
   color: rgba(246, 248, 251, 0.87);
 }
 
-.container-register form .footer a {
+.container-auth form .footer a {
   font-weight: 400;
   font-size: 0.75rem;
   text-decoration-line: underline;
