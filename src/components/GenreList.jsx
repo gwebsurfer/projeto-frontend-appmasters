@@ -1,6 +1,6 @@
 import './GenreList.css'
 
-export const GenreTagList = ({ genreList, setFilteredData, selectedGenre, setSelectedGenre }) => {
+export const GenreList = ({ genreList, setFilteredData, selectedGenre, setSelectedGenre }) => {
   const uniqueGenres = ['All', ...new Set(genreList?.map((game) => game.genre))];
 
   const genreFilter = (genre) => {
