@@ -21,7 +21,7 @@ export function Register() {
     e.preventDefault();
     const savedUser = await createUserWithEmailAndPassword(email, password);
     console.log(savedUser);
-    navigate("/");
+    navigate("/auth");
   }
 
   if (loading) return <Loader />
