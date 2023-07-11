@@ -60,31 +60,45 @@ export const Card = ({ game }) => {
   }, []);
 
   useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      if (isUserLoggedIn) {
-        try {
-          const userUID = auth?.currentUser?.uid;
-          const userRef = doc(db, "users", userUID);
-  
-          const userSnapshot = await getDoc(userRef);
-          const userData = userSnapshot.data();
-  
-          if (userData) {
-            setUserRatings(userData.ratings || []);
+    const fetchFavoriteStatus = async () => {
+      try {
+        const userUID = auth.currentUser?.uid;
+        const userRef = doc(db, "users", userUID);
+        const userSnapshot = await getDoc(userRef);
+        const userData = userSnapshot.data();
 
-            if (userData && userData.isFavorite && userData.isFavorite.includes(game.id)) {
-              setIsFavorite(true);
-            } else {
-              setIsFavorite(false);
-            }
-          }
-        } catch (error) {
-          console.error("Erro ao verificar status de favorito:", error);
+        if (userData && userData.isFavorite && userData.isFavorite.includes(game.id)) {
+          setIsFavorite(true);
+        } else {
+          setIsFavorite(false);
         }
+      } catch (error) {
+        console.error("Erro ao verificar status de favorito:", error);
       }
     };
-  
-    checkFavoriteStatus();
+
+    const fetchUserRatings = async () => {
+      try {
+        const userUID = auth.currentUser?.uid;
+        const userRef = doc(db, "users", userUID);
+        const userSnapshot = await getDoc(userRef);
+        const userData = userSnapshot.data();
+
+        if (userData) {
+          setUserRatings(userData.ratings || []);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar avaliações do usuário:", error);
+      }
+    };
+
+    if (isUserLoggedIn) {
+      fetchFavoriteStatus();
+      fetchUserRatings();
+    } else {
+      setIsFavorite(false);
+      setUserRatings([]);
+    }
   }, [isUserLoggedIn, game.id]);
 
   const handleFavoriteClick = async () => {
