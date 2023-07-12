@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavBar } from './NavBar';
 import { GenreList } from './GenreList';
+import { SearchFilter } from './SearchFilter';
 import { Card } from "./Card";
 import './GameList.css'
 
@@ -29,17 +30,17 @@ export const GameList = ({ gameList }) => {
 
   return (
     <>
-      <NavBar 
-        setSearchTerm={setSearchTerm} 
-        setSelectedGenre={setSelectedGenre} 
-      />
-      <h1>Game List</h1>
+      <NavBar />
       <GenreList
         genreList={gameList}
         setFilteredData={setFilteredData}
         setSelectedGenre={setSelectedGenre}
         selectedGenre={selectedGenre}
         handleGenreFilter={handleGenreFilter}
+      />
+      <SearchFilter 
+        setSearchTerm={setSearchTerm} 
+        setSelectedGenre={setSelectedGenre}
       />
       <div className='gameList'>
         <div className="container-list">

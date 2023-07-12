@@ -3,18 +3,11 @@ import { signOut } from "firebase/auth";
 import { Button } from "./Button";
 import logoImg from "../assets/logo.svg";
 import icon from "../assets/icon.svg";
-import searchIcon from "../assets/search.svg";
 import './NavBar.css';
 
-export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
+export const NavBar = () => {
 
   console.log(auth?.currentUser?.uid);
-
-  const handleSearchChange = (e) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
-    setSelectedGenre('All');
-  };
 
   const handleLogout = async () => {
     try {
@@ -33,10 +26,8 @@ export const NavBar = ({ setSearchTerm, setSelectedGenre }) => {
       <div className="logo-mobile">
         <img src={icon} alt="icon" />
       </div>
-      <div className="search-bar">
+      <div>
         <Button onClickFunction={handleLogout}>Log out</Button>
-        <input type="text" placeholder='Search by game title' onChange={handleSearchChange} />
-        <img className='search-icon' src={searchIcon} alt="" />
       </div>
     </div>
   )

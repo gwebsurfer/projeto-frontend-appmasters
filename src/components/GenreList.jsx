@@ -12,11 +12,24 @@ export const GenreList = ({ genreList, setFilteredData, selectedGenre, setSelect
     setSelectedGenre(genre);
   };
 
+  const genreCount = {};
+  genreList.forEach((game) => {
+    if (genreCount[game.genre]) {
+      genreCount[game.genre] += 1;
+    } else {
+      genreCount[game.genre] = 1;
+    }
+  });
+
+  genreCount['All'] = genreList.length;
+
   return (
     <div className="genre-list">
       <select onChange={(e) => genreFilter(e.target.value)} value={selectedGenre} className="genre-select">
       {uniqueGenres.map((genre) => (
-        <option value={genre} key={genre}>{genre}</option>
+        <option value={genre} key={genre}>
+          {genre} ({genreCount[genre]})
+        </option>
       ))}
       </select>
     </div>
