@@ -28,7 +28,6 @@ export const Card = ({ game }) => {
   const [isFavoriteHover, setIsFavoriteHover] = useState(false);
   const [isFavoriteClicked, setIsFavoriteClicked] = useState(false);
 
-
   const handleMouseEnter = (starIndex) => {
     setRating(starIndex + 1);
   };
