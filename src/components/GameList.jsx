@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { NavBar } from './NavBar';
-import { GenreList } from './GenreList';
 import { SearchFilter } from './SearchFilter';
 import { Card } from "./Card";
 import './GameList.css'
@@ -18,29 +17,15 @@ export const GameList = ({ gameList }) => {
     setFilteredData(filteredResults);
   }, [gameList, searchTerm]);
 
-  const handleGenreFilter = (genre) => {
-    if (genre === 'All') {
-      setFilteredData(gameList);
-    } else {
-      const filteredResults = gameList.filter((game) => game.genre === genre);
-      setFilteredData(filteredResults);
-    }
-    setSelectedGenre(genre);
-  };
-
   return (
     <>
       <NavBar />
-      <GenreList
+      <SearchFilter
         genreList={gameList}
         setFilteredData={setFilteredData}
         setSelectedGenre={setSelectedGenre}
         selectedGenre={selectedGenre}
-        handleGenreFilter={handleGenreFilter}
-      />
-      <SearchFilter 
-        setSearchTerm={setSearchTerm} 
-        setSelectedGenre={setSelectedGenre}
+        setSearchTerm={setSearchTerm}
       />
       <div className='gameList'>
         <div className="container-list">
