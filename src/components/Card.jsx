@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "firebase/firestore";
 import { motion } from 'framer-motion';
 import { Button } from './Button';
-import { auth, db } from "../services/firebaseConfig";
+import { db } from "../services/firebaseConfig";
 import heartIcon from "../assets/heart.svg";
 import starIcon from "../assets/star.svg";
 import starFilledIcon from "../assets/star-filled.svg";
 import heartFilledIcon from "../assets/heart-filled.svg";
 import './Card.css';
 
-export const Card = ({ game }) => {
+export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
   const limitText = (text, limit) => {
     if (text.length <= limit) {
       return text;
@@ -27,6 +27,34 @@ export const Card = ({ game }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isFavoriteHover, setIsFavoriteHover] = useState(false);
   const [isFavoriteClicked, setIsFavoriteClicked] = useState(false);
+  const [overallRating, setOverallRating] = useState(0.0);
+
+  useEffect(() => {
+    const ratingRef = doc(db, "gameRatings", game.id.toString());
+    const unsubscribe = onSnapshot(ratingRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const ratings = snapshot.data();
+        const ratingValues = Object.values(ratings);
+        const sum = ratingValues.reduce((acc, curr) => acc + curr, 0);
+        const average = sum / ratingValues.length;
+        setOverallRating(average.toFixed(1));
+      } else {
+        setOverallRating(0.0);
+      }
+    });
+  
+    return () => unsubscribe();
+  }, [game.id]);
+
+  useEffect(() => {
+    if (userData) {
+      if (userData.isFavorite && userData.isFavorite.includes(game.id)) {
+        setIsFavorite(true);
+      } else {
+        setIsFavorite(false);
+      }
+    }
+  }, [userData, game.id]);
 
   const handleMouseEnter = (starIndex) => {
     setRating(starIndex + 1);
@@ -46,60 +74,7 @@ export const Card = ({ game }) => {
 
   const shortDescription = limitText(game.short_description, 75);
 
-  const navigate = useNavigate();
-
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [userDocId, setUserDocId] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      setIsUserLoggedIn(!!user);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const checkUserDoc = async () => {
-      if (isUserLoggedIn) {
-        try {
-          const userUID = auth?.currentUser?.uid;
-          const userRef = doc(db, "users", userUID);
-  
-          const userSnapshot = await getDoc(userRef);
-  
-          if (userSnapshot.exists()) {
-            setUserDocId(userSnapshot.id);
-            const userData = userSnapshot.data();
-  
-            if (userData) {
-              setUserRatings(userData.ratings || []);
-  
-              if (userData.isFavorite && userData.isFavorite.includes(game.id)) {
-                setIsFavorite(true);
-              } else {
-                setIsFavorite(false);
-              }
-            }
-          } else {
-            const newUserData = {
-              ratings: [],
-              isFavorite: []
-            };
-  
-            const newUserRef = doc(db, "users", userUID);
-            await setDoc(newUserRef, newUserData);
-  
-            setUserDocId(newUserRef.id);
-          }
-        } catch (error) {
-          console.error("Erro ao verificar o documento do usuário:", error);
-        }
-      }
-    };
-  
-    checkUserDoc();
-  }, [isUserLoggedIn, game.id]);
+  const navigate = useNavigate();  
 
   const handleFavoriteClick = async () => {
     if (!isUserLoggedIn) {
@@ -136,6 +111,7 @@ export const Card = ({ game }) => {
     } else {
       try {
         const userRef = doc(db, "users", userDocId);
+        const ratingRef = doc(db, "gameRatings", game.id.toString());
   
         const userSnapshot = await getDoc(userRef);
         const userData = userSnapshot.data();
@@ -167,11 +143,25 @@ export const Card = ({ game }) => {
         setUserRatings(updatedRatings);
         setRating(ratingValue);
   
+        // Atualizar as avaliações gerais
+        const ratingSnapshot = await getDoc(ratingRef);
+        let updatedOverallRatings = {};
+  
+        if (ratingSnapshot.exists()) {
+          updatedOverallRatings = ratingSnapshot.data();
+          updatedOverallRatings[userDocId] = ratingValue; // Atualiza a avaliação do usuário
+        } else {
+          updatedOverallRatings = { [userDocId]: ratingValue }; // Essa é a primeira avaliação para este jogo
+        }
+  
+        await setDoc(ratingRef, updatedOverallRatings);
+  
       } catch (error) {
         console.error("Erro ao avaliar o jogo:", error);
       }
     }
   };
+  
 
   return (
     <motion.div
@@ -183,9 +173,9 @@ export const Card = ({ game }) => {
       <img src={game.thumbnail} alt="thumbnail" />
       <div className='game-info'>
         <div className='game-rate'>
-          <div className='rate'>
+          <div className='rating'>
           {[...Array(4)].map((_, index) => {
-            const userRating = userRatings.find(item => item.gameId === game.id);
+            const userRating = userData?.ratings?.find(item => item.gameId === game.id);
 
             return (
               <img
@@ -210,7 +200,7 @@ export const Card = ({ game }) => {
           </div>
         </div>
         <h2>{game.title}</h2>
-        <h6>Release date: {game.release_date}</h6>
+        <h6>Overall rating: {overallRating}</h6>
         <p>{shortDescription}</p>
         <div className='categories'>
           <h4 className='tag'>{game.platform}</h4>
