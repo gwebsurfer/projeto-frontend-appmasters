@@ -11,7 +11,6 @@ export const GameList = ({ gameList }) => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('All');
-  const [selectedSort, setSelectedSort] = useState('default');
   const [filteredData, setFilteredData] = useState(gameList);
   const [userData, setUserData] = useState(null);
   const [userDocId, setUserDocId] = useState(null);
@@ -67,8 +66,6 @@ export const GameList = ({ gameList }) => {
         setSelectedGenre={setSelectedGenre}
         selectedGenre={selectedGenre}
         setSearchTerm={setSearchTerm}
-        selectedSort={selectedSort}
-        setSelectedSort={setSelectedSort}
       />
       <div className='gameList'>
         <div className="container-list">

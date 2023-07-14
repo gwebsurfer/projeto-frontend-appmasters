@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSignInWithEmailAndPassword, useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { auth } from "../../services/firebaseConfig";
 import { Loader } from "../../components/Loader";
@@ -10,9 +10,13 @@ import logoImg from "../../assets/logo.svg";
 import "./styles.css";
 
 export function Auth() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const isSignupParam = queryParams.get('signup');
+  const isSignupDefault = isSignupParam === 'true';
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(isSignupDefault);
   const navigate = useNavigate();
 
   const [signInWithEmailAndPassword, signInLoading] = useSignInWithEmailAndPassword(auth);

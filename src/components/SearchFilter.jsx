@@ -3,13 +3,10 @@ import './SearchFilter.css'
 
 export const SearchFilter = ({ 
   genreList,
-  filteredData,
   setFilteredData,
   selectedGenre,
   setSearchTerm,
   setSelectedGenre,
-  selectedSort,
-  setSelectedSort,
  }) => {
 
   const uniqueGenres = ['All Games', ...new Set(genreList?.map((game) => game.genre))];
@@ -39,33 +36,6 @@ export const SearchFilter = ({
     setSearchTerm(searchTerm);
   };
 
-  const handleSortChange = (e) => {
-    const sortOption = e.target.value;
-    setSelectedSort(sortOption);
-    sortGames(sortOption);
-  };
-
-  const sortGames = (sortOption) => {
-    const sortedData = [...filteredData];
-
-    sortedData.sort((a, b) => {
-      // Handle non-rated games
-      if (!a.rating) return 1;
-      if (!b.rating) return -1;
-
-      // Sort by rating
-      if (sortOption === 'best') {
-        return b.rating - a.rating;
-      } else if (sortOption === 'worst') {
-        return a.rating - b.rating;
-      } else {
-        return 0; // Default option: no sorting
-      }
-    });
-
-    setFilteredData(sortedData);
-  };
-
   return (
     <div className="search-filter">
       <div className="search-bar">
@@ -83,14 +53,6 @@ export const SearchFilter = ({
         </select>
       </div>
 
-      <div className="sort-ratings">
-        <label htmlFor="selectedSort">não pode ser select</label>
-        <select onChange={handleSortChange} value={selectedSort}>
-          <option value="default">None</option>
-          <option value="best">Top Rated</option>
-          <option value="worst">Lowest Rated</option>
-        </select>
-      </div>
     </div>
   );
 }

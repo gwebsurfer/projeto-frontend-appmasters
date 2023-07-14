@@ -9,15 +9,6 @@
   flex-wrap: wrap;
 }
 
-.sort-ratings select {
-  padding: 0.6rem;
-  color: rgba(246, 248, 251, 0.87);
-  background-color: rgb(26, 31, 43);
-  border: rgba(138, 148, 168, 0.65) 1px solid;
-  border-radius: 8px;
-  outline-color: rgb(100, 108, 255);
-}
-
 .genre-list select {
   padding: 0.6rem;
   color: rgba(246, 248, 251, 0.87);
@@ -28,7 +19,7 @@
 }
 
 .search-bar input {
-  width: 200px;
+  width: 240px;
   padding: 0.7rem;
   color: rgba(246, 248, 251, 0.87);
   background-color: rgb(26, 31, 43);

@@ -24,6 +24,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
 
   const [rating, setRating] = useState(0);
   const [userRatings, setUserRatings] = useState([]);
+  const [hoverRating, setHoverRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isFavoriteHover, setIsFavoriteHover] = useState(false);
   const [isFavoriteClicked, setIsFavoriteClicked] = useState(false);
@@ -57,11 +58,11 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
   }, [userData, game.id]);
 
   const handleMouseEnter = (starIndex) => {
-    setRating(starIndex + 1);
+    setHoverRating(starIndex + 1);
   };
 
   const handleMouseLeave = () => {
-    setRating(0);
+    setHoverRating(0);
   };
 
   const handleFavoriteHover = () => {
@@ -114,7 +115,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
         const ratingRef = doc(db, "gameRatings", game.id.toString());
   
         const userSnapshot = await getDoc(userRef);
-        const userData = userSnapshot.data();
+        let userData = userSnapshot.data();
   
         let updatedRatings = [];
   
@@ -139,30 +140,36 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
         await updateDoc(userRef, {
           ratings: updatedRatings
         });
-  
-        setUserRatings(updatedRatings);
-        setRating(ratingValue);
-  
-        // Atualizar as avaliações gerais
-        const ratingSnapshot = await getDoc(ratingRef);
-        let updatedOverallRatings = {};
-  
-        if (ratingSnapshot.exists()) {
-          updatedOverallRatings = ratingSnapshot.data();
-          updatedOverallRatings[userDocId] = ratingValue; // Atualiza a avaliação do usuário
-        } else {
-          updatedOverallRatings = { [userDocId]: ratingValue }; // Essa é a primeira avaliação para este jogo
+
+        userData = {
+          ...userData,
+          ratings: updatedRatings,
         }
   
+        setUserRatings(updatedRatings);
+        
+        const ratingSnapshot = await getDoc(ratingRef);
+        let updatedOverallRatings = {};
+        
+        if (ratingSnapshot.exists()) {
+          updatedOverallRatings = ratingSnapshot.data();
+          updatedOverallRatings[userDocId] = ratingValue;
+        } else {
+          updatedOverallRatings = { [userDocId]: ratingValue };
+        }
+        
         await setDoc(ratingRef, updatedOverallRatings);
-  
+        setRating(ratingValue);
+        
       } catch (error) {
         console.error("Erro ao avaliar o jogo:", error);
       }
     }
   };
-  
 
+  const userRating = userData?.ratings?.find(item => item.gameId === game.id) || {};
+  const currentRating = rating || userRating.rating || 0;
+  
   return (
     <motion.div
       layout
@@ -174,20 +181,18 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
       <div className='game-info'>
         <div className='game-rate'>
           <div className='rating'>
-          {[...Array(4)].map((_, index) => {
-            const userRating = userData?.ratings?.find(item => item.gameId === game.id);
-
-            return (
-              <img
-                key={index}
-                src={index < (rating || (userRating && userRating.rating) || 0) ? starFilledIcon : starIcon}
-                alt='Rate icon'
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleRatingClick(index + 1)}
-              />
-            );
-          })}
+            {[...Array(4)].map((_, index) => {
+              return (
+                <img
+                  key={index}
+                  src={index < (hoverRating || currentRating) ? starFilledIcon : starIcon}
+                  alt='Rate icon'
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => handleRatingClick(index + 1)}
+                />
+              );
+            })}
           </div>
           <div
             className={`favorite ${isFavorite || isFavoriteHover ? 'favorite-hover' : ''} ${isFavoriteClicked ? 'favorite-click-animation' : ''}`}
@@ -200,7 +205,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
           </div>
         </div>
         <h2>{game.title}</h2>
-        <h6>Overall rating: {overallRating}</h6>
+        <h6>Overall rating: {overallRating == 0.0 ? 'Unrated' : overallRating}</h6>
         <p>{shortDescription}</p>
         <div className='categories'>
           <h4 className='tag'>{game.platform}</h4>
