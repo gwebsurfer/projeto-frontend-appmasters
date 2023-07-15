@@ -102,7 +102,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
           setIsFavoriteClicked(false);
         }, 300);
       } catch (error) {
-        console.error("Erro ao favoritar o jogo:", error);
+        alert('Failed to favorite the game. Please try again later.', error);
       }
     }
   };
@@ -163,7 +163,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
         setRating(ratingValue);
         
       } catch (error) {
-        console.error("Erro ao avaliar o jogo:", error);
+        alert('Error rating the game. Please try again later.', error);
       }
     }
   };
@@ -184,7 +184,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
           <div className='rating'>
             {[...Array(4)].map((_, index) => {
               return (
-                <img
+                <motion.img
                   key={index}
                   src={(isUserLoggedIn && index < currentRating) || index < hoverRating ? starFilledIcon : starIcon}
                   alt='Rate icon'

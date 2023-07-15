@@ -30,8 +30,7 @@ export function Auth() {
 
   async function handleSignUp(e) {
     e.preventDefault();
-    const savedUser = await createUserWithEmailAndPassword(email, password);
-    console.log(savedUser);
+    await createUserWithEmailAndPassword(email, password);
     navigate("/");
   }
 

@@ -17,28 +17,24 @@ export const NavBar = ({ setIsUserLoggedIn }) => {
   const user = auth?.currentUser;
 
   const options = [
-    { value: "favorites", label: "Favorites" },
+    { value: "my-account", label: "My Account", isDisabled: true },
     { value: "logout", label: "Logout" },
   ];
 
   const handleSelectChange = (selectedOption) => {
     if (selectedOption.value === "logout") {
       handleLogout();
-    } else if (selectedOption.value === "favorites") {
-      navigate('/favorites');
+    } else if (selectedOption.value === "my-account") {
+      navigate('/');
     }
   };
 
-  console.log((auth?.currentUser?.uid));
-  console.log(user);
-
   const handleLogout = async () => {
     try {
-      console.log('logout')
       await signOut(auth);
       setIsUserLoggedIn(false);
     } catch (err) {
-      console.error(err);
+      alert('An error occurred while logging out. Please try again later.', err);
     }
   };
 
@@ -67,10 +63,10 @@ export const NavBar = ({ setIsUserLoggedIn }) => {
                 }),
                 option: (base, state) => ({
                   ...base,
-                  color: state.isFocused ? 'rgba(246, 248, 251, 0.67)' : 'rgba(246, 248, 251, 0.87)',
-                  backgroundColor: state.isFocused ? 'rgb(17, 21, 29)' : 'rgb(26, 31, 43)',
-                  borderTop: '0.05rem solid rgba(246, 248, 251, 0.1)',
-                  cursor: 'pointer',
+                  color: state.isDisabled ? 'rgba(246, 248, 251, 0.4)' : (246, 248, 251, 0.87) && state.isFocused ? 'rgb(255, 255, 255)' : 'rgba(246, 248, 251, 0.87)',
+                  backgroundColor: state.isDisabled ? 'rgb(26, 31, 43)' : 'rgb(26, 31, 43)' && state.isFocused ? 'rgb(17, 21, 29)' : 'rgb(26, 31, 43)',
+                  borderBottom: '0.05rem solid rgba(246, 248, 251, 0.05)',
+                  cursor: state.isDisabled ? 'default' : 'pointer',
                 }),
                 placeholder: (base) => ({
                   ...base,
@@ -78,14 +74,18 @@ export const NavBar = ({ setIsUserLoggedIn }) => {
                   color: 'rgba(246, 248, 251, 0.87)',
                   fontWeight: 300,
                 }),
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
+                control: (styles, state) => ({
+                  ...styles,
                   backgroundColor: 'rgb(26, 31, 43)',
                   group: 'rgb(26, 31, 43)',
                   background: state.menuIsOpen ? 'rgb(26, 31, 43)' : '',
                   borderColor: state.isFocused ? 'grey' : '',
                   border: 'none',
                   cursor: 'pointer',
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  backgroundColor: 'rgba(26, 31, 43, 0.9)',
                 }),
               }}
             />

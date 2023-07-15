@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Select, { components } from 'react-select';
 import { getDoc, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../services/firebaseConfig";
 import { NavBar } from './NavBar';
 import { Card } from "./Card";
+import { Button } from './Button';
+import { Footer } from './Footer';
 import searchIcon from "../assets/search.svg";
 import './GameList.css'
 
@@ -11,31 +14,33 @@ export const GameList = ({ gameList }) => {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [selectedGenre, setSelectedGenre] = useState({ value: 'All Games', label: 'All Games' });
   const [filteredData, setFilteredData] = useState(gameList);
   const [userData, setUserData] = useState(null);
   const [userDocId, setUserDocId] = useState(null);
+  const [favoritesMode, setFavoritesMode] = useState(false);
+  const navigate = useNavigate(); 
 
   const colourStyles = {
     control: (styles, state) => ({ 
       ...styles, 
-      width: '160px',
+      width: '200px',
       backgroundColor: 'rgb(26, 31, 43)',
       color: 'rgba(246, 248, 251, 0.87)',
       fontSize: '0.8rem',
-      fontWeight: 400,
+      fontWeight: '400',
       boxShadow: state.isFocused ? '0 0 0 1px rgb(100, 108, 255)' : '',
       border: '1px solid rgba(138, 148, 168, 0.5)',
       borderRadius: '0.5rem',
     }),
     option: (base, state) => ({
       ...base,
-      color: state.isFocused ? 'rgb(255, 255, 255)' : 'rgba(246, 248, 251, 0.87)',
-      backgroundColor: state.isFocused ? 'rgba(26, 31, 43, 1)' : 'rgba(26, 31, 43, 0.7)',
+      color: state.isDisabled ? 'rgba(246, 248, 251, 0.4)' : 'rgba(246, 248, 251, 0.87)' && state.isFocused ? 'rgb(255, 255, 255)' : 'rgba(246, 248, 251, 0.87)',
+      backgroundColor: state.isFocused ? 'rgb(17, 21, 29)' : 'rgba(26, 31, 43, 0.7)',
       borderBottom: '0.05rem solid rgba(246, 248, 251, 0.05)',
-      cursor: 'pointer',
-      fontSize: '0.8rem',
-      fontWeight: 400,
+      cursor: state.isDisabled ? 'default' : 'pointer',
+      fontSize: state.isDisabled ? '0.6rem' : '0.8rem',
+      fontWeight: '400',
     }),
     singleValue: (styles) => ({
       ...styles,
@@ -47,7 +52,7 @@ export const GameList = ({ gameList }) => {
     }),
   };
 
-  const uniqueGenres = ['All Games', ...new Set(gameList?.map((game) => game.genre))];
+  const uniqueGenres = [...new Set(gameList?.map((game) => game.genre))];
 
   const genreCount = {};
   gameList.forEach((game) => {
@@ -60,40 +65,71 @@ export const GameList = ({ gameList }) => {
 
   genreCount['All Games'] = gameList.length;
 
-  const genreOptions = uniqueGenres.map(genre => ({ 
-    value: genre, 
-    label: genre,
-  }));
+  const genreOptions = [
+    { value: 'All Games', label: 'All Games' },
+    { value: '', label: 'GENRE LIST', isDisabled: true },
+    ...uniqueGenres.map(genre => ({ value: genre, label: genre })),
+  ];  
 
   const CustomOption = ({ data, ...props }) => (
     <components.Option {...props}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         {data.label}
+        {data.isDisabled ? null : (
         <span style={{ backgroundColor: 'rgb(100, 108, 255)', borderRadius: '4px', padding: '0 5px' }}>
           {genreCount[data.value]}
         </span>
+        )}
       </div>
     </components.Option>
   );
 
   const genreFilter = (selectedOption) => {
-    if (selectedOption.value === 'All Games') {
-      setFilteredData(gameList);
-    } else {
-      setFilteredData(gameList.filter((game) => game.genre === selectedOption.value))
+    let filteredGames = gameList;
+    
+    if (selectedOption.value !== 'All Games') {
+      filteredGames = filteredGames.filter((game) => game.genre === selectedOption.value);
     }
+    
+    if (favoritesMode) {
+      filteredGames = filteredGames.filter((game) => userData.isFavorite.includes(game.id));
+    }
+    
+    setFilteredData(filteredGames);
     setSelectedGenre(selectedOption);
+    filterData();
   };
 
+  const filterData = useCallback(() => {
+    let filteredGames = gameList;
+  
+    if (searchTerm) {
+      filteredGames = filteredGames.filter((game) => game.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+  
+    if (selectedGenre.value !== 'All Games') {
+      filteredGames = filteredGames.filter((game) => game.genre === selectedGenre.value);
+    }
+  
+    if (favoritesMode && userData) {
+      filteredGames = filteredGames.filter((game) => userData.isFavorite.includes(game.id));
+    }
+  
+    setFilteredData(filteredGames);
+  }, [favoritesMode, userData, gameList, selectedGenre.value, searchTerm]);
+  
   const handleSearchChange = (e) => {
     const searchTerm = e.target.value;
     setSearchTerm(searchTerm);
   };
+
+  useEffect(() => {
+    filterData();
+  }, [filterData, gameList, searchTerm]);
   
   const checkUserDoc = async () => {
     const userUID = auth?.currentUser?.uid;
     const userRef = doc(db, "users", userUID);
-
     const userSnapshot = await getDoc(userRef);
 
     if (userSnapshot.exists()) {
@@ -125,20 +161,13 @@ export const GameList = ({ gameList }) => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const filteredResults = gameList?.filter((game) =>
-      game.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filteredResults);
-  }, [gameList, searchTerm]);
-
   return (
     <>
       <NavBar setIsUserLoggedIn={setIsUserLoggedIn} />
 
       <div className="search-filter">
         <div className="search-bar">
-          <input type="text" placeholder='Search by game title' onKeyDown={handleSearchChange} />
+          <input type="text" placeholder='Search by game title' onChange={handleSearchChange} />
           <img className='search-icon' src={searchIcon} alt="" />
         </div>
 
@@ -151,8 +180,20 @@ export const GameList = ({ gameList }) => {
             isSearchable={false}
             placeholder='Genre'
             components={{ Option: CustomOption }}
+            isOptionDisabled={(option) => option.isDisabled}
           />
         </div>
+
+        <Button classType="show-favorites-btn" onClickFunction={() => { 
+          if (!isUserLoggedIn) {
+            navigate('/auth')
+          } else {
+            setFavoritesMode(!favoritesMode);
+            filterData();
+          }
+        }}>
+          {favoritesMode ? 'Show All' : 'My Favorites'}
+        </Button>
       </div>
       
       <div className='gameList'>
@@ -168,6 +209,8 @@ export const GameList = ({ gameList }) => {
         ))}
         </div>
       </div>
+
+      <Footer />
     </>
   );
 };

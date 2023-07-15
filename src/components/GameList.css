@@ -1,6 +1,6 @@
 .container-list {
   margin: 0 auto;
-  padding: 2rem 2rem;
+  padding: 3rem 2rem;
   width: fit-content;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -9,7 +9,7 @@
 
 .search-filter {
   margin: 0 auto;
-  padding-top: 2rem;
+  padding-top: 3rem;
   max-width: 1160px;
   display: flex;
   align-items: center;
@@ -43,6 +43,24 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
+}
+
+.show-favorites-btn {
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 1);
+  background-color: rgb(100, 108, 255);
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+}
+
+.show-favorites-btn:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
