@@ -184,7 +184,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
           <div className='rating'>
             {[...Array(4)].map((_, index) => {
               return (
-                <motion.img
+                <img
                   key={index}
                   src={(isUserLoggedIn && index < currentRating) || index < hoverRating ? starFilledIcon : starIcon}
                   alt='Rate icon'
