@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";

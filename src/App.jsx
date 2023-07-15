@@ -10,7 +10,6 @@ import { ErrorHandler } from './components/ErrorHandler';
 import './App.css';
 
 const App = () => {
-  const [isLogged, setIsLogged] = useState(true);
   const [errorMessage, setErrorMessage] = useState();
 
   const { isLoading, data } = useQuery("game-list", () => {
@@ -36,7 +35,7 @@ const App = () => {
     <>
       <div className='app-container'>
         <div className='gameList'>
-          <GameList gameList={data} onLogout={() => setIsLogged(false)} />
+          <GameList gameList={data} />
         </div>
       </div>
     </>
