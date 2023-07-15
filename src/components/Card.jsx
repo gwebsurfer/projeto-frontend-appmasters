@@ -11,6 +11,7 @@ import heartFilledIcon from "../assets/heart-filled.svg";
 import './Card.css';
 
 export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
+
   const limitText = (text, limit) => {
     if (text.length <= limit) {
       return text;
@@ -48,14 +49,14 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
   }, [game.id]);
 
   useEffect(() => {
-    if (userData) {
+    if (userData && isUserLoggedIn) {
       if (userData.isFavorite && userData.isFavorite.includes(game.id)) {
         setIsFavorite(true);
       } else {
         setIsFavorite(false);
       }
     }
-  }, [userData, game.id]);
+  }, [userData, game.id, isUserLoggedIn]);
 
   const handleMouseEnter = (starIndex) => {
     setHoverRating(starIndex + 1);
@@ -185,7 +186,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
               return (
                 <img
                   key={index}
-                  src={index < (hoverRating || currentRating) ? starFilledIcon : starIcon}
+                  src={(isUserLoggedIn && index < currentRating) || index < hoverRating ? starFilledIcon : starIcon}
                   alt='Rate icon'
                   onMouseEnter={() => handleMouseEnter(index)}
                   onMouseLeave={handleMouseLeave}
@@ -200,7 +201,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
             onMouseLeave={handleFavoriteLeave}
             onClick={handleFavoriteClick}
           >
-            <img src={isFavorite || isFavoriteHover ? heartFilledIcon : heartIcon} alt='Favorite icon' />
+            <img src={(isUserLoggedIn && isFavorite) || isFavoriteHover ? heartFilledIcon : heartIcon} alt='Favorite icon' />
             <span>Favorite</span>
           </div>
         </div>

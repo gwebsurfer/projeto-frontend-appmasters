@@ -134,7 +134,7 @@ export const GameList = ({ gameList }) => {
 
   return (
     <>
-      <NavBar />
+      <NavBar setIsUserLoggedIn={setIsUserLoggedIn} />
 
       <div className="search-filter">
         <div className="search-bar">

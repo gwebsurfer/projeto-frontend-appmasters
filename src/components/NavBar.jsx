@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -9,7 +9,7 @@ import icon from "../assets/icon.svg";
 import avatar from "../assets/avatar.svg";
 import './NavBar.css';
 
-export const NavBar = () => {
+export const NavBar = ({ setIsUserLoggedIn }) => {
 
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -29,12 +29,14 @@ export const NavBar = () => {
     }
   };
 
-  console.log(auth?.currentUser?.uid);
+  console.log((auth?.currentUser?.uid));
+  console.log(user);
 
   const handleLogout = async () => {
     try {
       console.log('logout')
       await signOut(auth);
+      setIsUserLoggedIn(false);
     } catch (err) {
       console.error(err);
     }
