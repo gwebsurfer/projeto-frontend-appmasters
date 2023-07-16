@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useSignInWithEmailAndPassword, useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,  } from "firebase/auth";
 
-import { auth } from "../../services/firebaseConfig";
-import { Loader } from "../../components/Loader";
 import arrowImg from "../../assets/arrow.svg";
 import logoImg from "../../assets/logo.svg";
 
@@ -14,33 +12,65 @@ export function Auth() {
   const queryParams = new URLSearchParams(location.search);
   const isSignupParam = queryParams.get('signup');
   const isSignupDefault = isSignupParam === 'true';
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(isSignupDefault);
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [errorField, setErrorField] = useState('');
 
-  const [signInWithEmailAndPassword, signInLoading] = useSignInWithEmailAndPassword(auth);
-  const [createUserWithEmailAndPassword, signUpLoading] = useCreateUserWithEmailAndPassword(auth);
+  const auth = getAuth();
 
   async function handleSignIn(e) {
     e.preventDefault();
-    await signInWithEmailAndPassword(email, password);
-    navigate("/projeto-frontend-appmasters");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/projeto-frontend-appmasters');
+    } catch (err) {
+      switch(err.code) {
+        case 'auth/user-not-found':
+          setError('No account found with this e-mail.');
+          setErrorField('email');
+          break;
+        case 'auth/wrong-password':
+          setError('Invalid password.');
+          setErrorField('password');
+          break;
+        default:
+          setError('An error occurred during sign in.');
+          setErrorField('default');
+          break;
+      }
+    }
   }
-
+  
   async function handleSignUp(e) {
     e.preventDefault();
-    await createUserWithEmailAndPassword(email, password);
-    navigate("/projeto-frontend-appmasters");
-  }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/projeto-frontend-appmasters');
+    } catch (err) {
+      switch(err.code) {
+        case 'auth/invalid-email':
+          setError('Invalid e-mail address.');
+          setErrorField('email');
+          break;
+        case 'auth/weak-password':
+          setError('Password should be at least 6 characters long.');
+          setErrorField('password');
+          break;
+        default:
+          setError('An error occurred during sign up.');
+          setErrorField('default');
+          break;
+      }
+    }
+  }  
 
   const handleToggleForm = () => {
     setIsSignUp(prevState => !prevState);
+    setError('');
   };
-
-  const loading = signInLoading || signUpLoading;
-
-  if (loading) return <Loader />;
 
   return (
     <div className="container-auth">
@@ -50,34 +80,44 @@ export function Auth() {
       </header>
 
       <form>
-        <div className="inputContainer">
-          <label htmlFor="email">E-mail</label>
-          <input
-            type="text"
-            name="email"
-            id="email"
-            placeholder="ellie@gmail.com"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+      <div className="inputContainer">
+        <label htmlFor="email">E-mail</label>
+        <input
+          type="text"
+          name="email"
+          id="email"
+          placeholder="ellie@gmail.com"
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setErrorField('');
+          }}
+          style={{ borderColor: errorField === 'email' || errorField === 'default' ? 'rgb(255, 75, 75)' : '' }}
+        />
+      </div>
 
-        <div className="inputContainer">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="************"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+      <div className="inputContainer">
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="******"
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setErrorField('');
+          }}
+          style={{ borderColor: errorField === 'password' || errorField === 'default' ? 'rgb(255, 75, 75)' : '' }}
+        />
+      </div>
 
-        <button className="button" onClick={isSignUp ? handleSignUp : handleSignIn}>
+        {error && <span className="auth-error">{error}</span>}
+
+        <button className="button" onClick={isSignUp ? (e) => handleSignUp(e) : (e) => handleSignIn(e)}>
           {isSignUp ? 'Sign up' : 'Sign in'} <img src={arrowImg} alt="Arrow icon" />
         </button>
         <div className="footer">
           <p>{isSignUp ? 'Do you already have an account?' : "Don't have an account?"}</p>
-          <Link to="/projeto-frontend-appmasters/auth" onClick={handleToggleForm}>
+          <Link to="#" onClick={handleToggleForm}>
             {isSignUp ? 'Access your account here.' : 'Create your account here.'}
           </Link>
         </div>
