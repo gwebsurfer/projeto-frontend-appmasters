@@ -10,6 +10,26 @@
   word-wrap: break-word;
 }
 
+.error-img-code {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.error-img-code img {
+  z-index: 1;
+}
+
+.error-code {
+  position: absolute;
+  padding-bottom: 156px;
+  font-size: 7rem;
+  font-weight: 900;
+  z-index: 0;
+}
+
 .error-button {
   width: 300px;
   border-radius: 0.6rem;

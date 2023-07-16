@@ -11,23 +11,27 @@ import './App.css';
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState();
+  const [errorCode, setErrorCode] = useState();
 
   const { isLoading, data } = useQuery("game-list", () => {
-
+    
     return instance
-      .get('/data')
-      .then(response => response.data)
-      .catch(function (error) {
-        if (error.code === 'ECONNABORTED') return setErrorMessage('O servidor demorou para responder, tente mais tarde.');
+    .get('/data')
+    .then(response => response.data)
+    .catch(function (error) {
+      if (error.code === 'ECONNABORTED') return setErrorMessage('O servidor demorou para responder, tente mais tarde.');
+      
+      if (codeError.includes(error.response?.status)) {
+        setErrorCode(error.response?.status);
+        return setErrorMessage('O servidor falhou em responder, tente recarregar a página.', error.response?.status);
+      }
 
-        if (codeError.includes(error.response?.status))
-          return setErrorMessage('O servidor falhou em responder, tente recarregar a página.', error.response?.status);
-
-        return setErrorMessage('O servidor não conseguirá responder por agora, tente voltar novamente mais tarde.', error.response?.status);
-      });
+      setErrorCode(error.response?.status);
+      return setErrorMessage('O servidor não conseguirá responder por agora, tente voltar novamente mais tarde.', error.response?.status);
+    });
   });
 
-  if (!data && !isLoading && errorMessage) return <ErrorHandler>{errorMessage}</ErrorHandler>
+  if (!data && !isLoading && errorMessage) return <ErrorHandler errorMessage={errorMessage} errorCode={errorCode} />
 
   if (isLoading) return <Loader />
 
