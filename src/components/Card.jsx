@@ -80,7 +80,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
 
   const handleFavoriteClick = async () => {
     if (!isUserLoggedIn) {
-      navigate('/auth');
+      navigate('/projeto-frontend-appmasters/auth');
     } else {
       try {
         const userRef = doc(db, "users", userDocId);
@@ -109,7 +109,7 @@ export const Card = ({ game, userDocId, userData, isUserLoggedIn }) => {
 
   const handleRatingClick = async (ratingValue) => {
     if (!isUserLoggedIn) {
-      navigate('/auth');
+      navigate('/projeto-frontend-appmasters/auth');
     } else {
       try {
         const userRef = doc(db, "users", userDocId);

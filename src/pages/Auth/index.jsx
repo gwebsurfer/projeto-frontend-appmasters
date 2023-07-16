@@ -25,13 +25,13 @@ export function Auth() {
   async function handleSignIn(e) {
     e.preventDefault();
     await signInWithEmailAndPassword(email, password);
-    navigate("/");
+    navigate("/projeto-frontend-appmasters");
   }
 
   async function handleSignUp(e) {
     e.preventDefault();
     await createUserWithEmailAndPassword(email, password);
-    navigate("/");
+    navigate("/projeto-frontend-appmasters");
   }
 
   const handleToggleForm = () => {
@@ -77,7 +77,7 @@ export function Auth() {
         </button>
         <div className="footer">
           <p>{isSignUp ? 'Do you already have an account?' : "Don't have an account?"}</p>
-          <Link to="/auth" onClick={handleToggleForm}>
+          <Link to="/projeto-frontend-appmasters/auth" onClick={handleToggleForm}>
             {isSignUp ? 'Access your account here.' : 'Create your account here.'}
           </Link>
         </div>

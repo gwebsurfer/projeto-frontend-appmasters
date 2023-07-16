@@ -186,7 +186,7 @@ export const GameList = ({ gameList }) => {
 
         <Button classType="show-favorites-btn" onClickFunction={() => { 
           if (!isUserLoggedIn) {
-            navigate('/auth')
+            navigate('/projeto-frontend-appmasters/auth')
           } else {
             setFavoritesMode(!favoritesMode);
             filterData();

@@ -25,7 +25,7 @@ export const NavBar = ({ setIsUserLoggedIn }) => {
     if (selectedOption.value === "logout") {
       handleLogout();
     } else if (selectedOption.value === "my-account") {
-      navigate('/');
+      navigate('/projeto-frontend-appmasters');
     }
   };
 
@@ -92,8 +92,8 @@ export const NavBar = ({ setIsUserLoggedIn }) => {
           </div>
         ) : (
           <div className="login-area">
-            <Button classType={'secondary-navbar-button'} onClickFunction={() => {navigate('/auth')}}>Login</Button>
-            <Button classType={'primary-navbar-button'} onClickFunction={() => {navigate('/auth?signup=true')}}>Sign Up</Button>
+            <Button classType={'secondary-navbar-button'} onClickFunction={() => {navigate('/projeto-frontend-appmasters/auth')}}>Login</Button>
+            <Button classType={'primary-navbar-button'} onClickFunction={() => {navigate('/projeto-frontend-appmasters/auth?signup=true')}}>Sign Up</Button>
           </div>
         )}
       </div>
